@@ -4,7 +4,7 @@ Shader "Triplanar/TriplanarUnlit"
     {
         [NoScaleOffset]_Diffuse("Diffuse", 2D) = "white" {}
         _Color("Color", Color) = (0.7058824, 0.7058824, 0.7058824, 0)
-        _Blend("Blend", Range(0, 1)) = 0.5
+        _Blend("Blend", Float) = 0.5
         _Tiling("Tiling", Float) = 0
         _Contrast("Contrast", Range(0, 3)) = 1
         _Transparency("Transparency", Range(0, 1)) = 1

@@ -4,11 +4,11 @@ Shader "Triplanar/TriplanarLit (Simple)"
     {
         [NoScaleOffset]_Diffuse("Diffuse", 2D) = "white" {}
         [NoScaleOffset]_Normal_Map("Normal Map", 2D) = "white" {}
-        _Normal_Strength("Normal Strength", Range(0, 1)) = 0
+        _Normal_Strength("Normal Strength", Range(0, 3)) = 0
         _Smoothness("Smoothness", Range(0, 1)) = 0
         _Metallic("Metallic", Range(0, 1)) = 0
         _Tiling("Tiling", Float) = 0.5
-        _Blend("Blend", Range(0, 1)) = 0.5
+        _Blend("Blend", Float) = 0.5
         _Opacity("Opacity", Range(0, 1)) = 1
         [HDR]_Emission_Color("Emission Color", Color) = (0, 0, 0, 0)
         _Emission_Strength("Emission Strength", Range(0, 2)) = 0

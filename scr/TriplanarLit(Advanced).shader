@@ -13,15 +13,15 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         [NoScaleOffset]_Metallic_Map("Metallic Map", 2D) = "white" {}
         _Ambient_Occlusion("Ambient Occlusion", Float) = 1
         [NoScaleOffset]_Ambient_Occlusion_Map("Ambient Occlusion Map", 2D) = "white" {}
-        [ToggleUI]_Apply_Filters("Apply Filters", Float) = 1
-        _Color("Color", Color) = (0.7058824, 0.7058824, 0.7058824, 0)
-        _Contrast("Contrast", Float) = 0
-        _Saturation("Saturation", Float) = 1
         _Opacity("Opacity", Float) = 1
         [NoScaleOffset]_Alpha_Map("Alpha Map", 2D) = "white" {}
         [HDR]_Emission_Color("Emission Color", Color) = (0, 0, 0, 0)
-        _Emission_Strength("Emission Strength", Range(0, 2)) = 0
+        _Emission_Strength("Emission Strength", Float) = 0
         [NoScaleOffset]_Emission_Map("Emission Map", 2D) = "white" {}
+        [ToggleUI]_Apply_Filters("Apply Filters", Float) = 0
+        __Filter_Color("(Filter) Color", Color) = (0.7058824, 0.7058824, 0.7058824, 0)
+        __Filter_Contrast("(Filter) Contrast", Float) = 0
+        __Filter_Saturation("(Filter) Saturation", Float) = 1
         [HideInInspector]_BUILTIN_QueueOffset("Float", Float) = 0
         [HideInInspector]_BUILTIN_QueueControl("Float", Float) = -1
     }
@@ -285,7 +285,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float _Normal_Strength;
         float _Smoothness;
         float _Metallic;
-        float4 _Color;
+        float4 __Filter_Color;
         float4 _Emission_Color;
         float4 _Alpha_Map_TexelSize;
         float _Opacity;
@@ -295,9 +295,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float4 _Metallic_Map_TexelSize;
         float _Ambient_Occlusion;
         float4 _Ambient_Occlusion_Map_TexelSize;
-        float _Contrast;
+        float __Filter_Contrast;
         float _Apply_Filters;
-        float _Saturation;
+        float __Filter_Saturation;
         CBUFFER_END
         
         // Object and Global properties
@@ -419,7 +419,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         {
             SurfaceDescription surface = (SurfaceDescription)0;
             float _Property_7b5fcd77ad264a83a7858d8f8361dbd7_Out_0 = _Apply_Filters;
-            float4 _Property_e0ca4e34dd184733915c6122832975e4_Out_0 = _Color;
+            float4 _Property_e0ca4e34dd184733915c6122832975e4_Out_0 = __Filter_Color;
             float4 _Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3;
             Unity_Branch_float4(_Property_7b5fcd77ad264a83a7858d8f8361dbd7_Out_0, _Property_e0ca4e34dd184733915c6122832975e4_Out_0, float4(0.5, 0.5, 0.5, 0), _Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3);
             UnityTexture2D _Property_6c8663f0373d4b058ae8b9af5db9f43e_Out_0 = UnityBuildTexture2DStructNoScale(_Diffuse);
@@ -435,13 +435,13 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float4 _Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2;
             Unity_Blend_Overlay_float4(_Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3, _Triplanar_f96cb0998e494774b09fab89ebb65eb5_Out_0, _Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2, 1);
             float _Property_4bd6ac78ba874554b874b76acf5eb180_Out_0 = _Apply_Filters;
-            float _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0 = _Contrast;
+            float _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0 = __Filter_Contrast;
             float _Branch_7646794670b149f6b60b9fe083ccac25_Out_3;
             Unity_Branch_float(_Property_4bd6ac78ba874554b874b76acf5eb180_Out_0, _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0, 1, _Branch_7646794670b149f6b60b9fe083ccac25_Out_3);
             float3 _Contrast_5087ef763a7e408686e5684e2bd7fd3d_Out_2;
             Unity_Contrast_float((_Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2.xyz), _Branch_7646794670b149f6b60b9fe083ccac25_Out_3, _Contrast_5087ef763a7e408686e5684e2bd7fd3d_Out_2);
             float _Property_507c099bfb814af6aeb4eebfbbf3d34a_Out_0 = _Apply_Filters;
-            float _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0 = _Saturation;
+            float _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0 = __Filter_Saturation;
             float _Branch_9912f29c61804626a6ab83b323d383d5_Out_3;
             Unity_Branch_float(_Property_507c099bfb814af6aeb4eebfbbf3d34a_Out_0, _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0, 1, _Branch_9912f29c61804626a6ab83b323d383d5_Out_3);
             float3 _Saturation_07d8daef15d04c6db1e1f18efb74c91f_Out_2;
@@ -509,6 +509,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float _Property_b41c1f0171a8491283bb490d369c1633_Out_0 = _Ambient_Occlusion;
             float4 _Multiply_8460e617a2774fc4a9bc1b8ac4b4c498_Out_2;
             Unity_Multiply_float4_float4(_Triplanar_c18df43557c74ecf9550fa6e5f01b85a_Out_0, (_Property_b41c1f0171a8491283bb490d369c1633_Out_0.xxxx), _Multiply_8460e617a2774fc4a9bc1b8ac4b4c498_Out_2);
+            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
             UnityTexture2D _Property_4ffddeb9667041dea5361019922617c3_Out_0 = UnityBuildTexture2DStructNoScale(_Alpha_Map);
             float3 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV = IN.AbsoluteWorldSpacePosition * _Property_0d71a168115a4531a21482c995ff11b8_Out_0;
             float3 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend = SafePositivePow_float(IN.WorldSpaceNormal, min(_Property_a5f4da8e125f4a69b3ef8e0eee9629a9_Out_0, floor(log2(Min_float())/log2(1/sqrt(3)))) );
@@ -517,16 +518,15 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xz);
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xy);
             float4 _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0 = Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_X * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.x + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.y + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.z;
-            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
-            float4 _Blend_04e315e7adad422f95d89e384838304a_Out_2;
-            Unity_Blend_Overlay_float4(_Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, (_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Blend_04e315e7adad422f95d89e384838304a_Out_2, 1);
+            float4 _Multiply_969d0f17e76149089b7efa601089c78e_Out_2;
+            Unity_Multiply_float4_float4((_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, _Multiply_969d0f17e76149089b7efa601089c78e_Out_2);
             surface.BaseColor = _Saturation_07d8daef15d04c6db1e1f18efb74c91f_Out_2;
             surface.NormalTS = _NormalStrength_530366de39034d288415f2bd44ee2d24_Out_2;
             surface.Emission = (_Multiply_b2871317a9804ae491f162ac9a41c7ee_Out_2.xyz);
             surface.Metallic = (_Multiply_51419fc37ba3467492dc6057f62e848a_Out_2).x;
             surface.Smoothness = (_Multiply_1190034063a742598e70497b24a917d6_Out_2).x;
             surface.Occlusion = (_Multiply_8460e617a2774fc4a9bc1b8ac4b4c498_Out_2).x;
-            surface.Alpha = (_Blend_04e315e7adad422f95d89e384838304a_Out_2).x;
+            surface.Alpha = (_Multiply_969d0f17e76149089b7efa601089c78e_Out_2).x;
             return surface;
         }
         
@@ -904,7 +904,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float _Normal_Strength;
         float _Smoothness;
         float _Metallic;
-        float4 _Color;
+        float4 __Filter_Color;
         float4 _Emission_Color;
         float4 _Alpha_Map_TexelSize;
         float _Opacity;
@@ -914,9 +914,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float4 _Metallic_Map_TexelSize;
         float _Ambient_Occlusion;
         float4 _Ambient_Occlusion_Map_TexelSize;
-        float _Contrast;
+        float __Filter_Contrast;
         float _Apply_Filters;
-        float _Saturation;
+        float __Filter_Saturation;
         CBUFFER_END
         
         // Object and Global properties
@@ -1038,7 +1038,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         {
             SurfaceDescription surface = (SurfaceDescription)0;
             float _Property_7b5fcd77ad264a83a7858d8f8361dbd7_Out_0 = _Apply_Filters;
-            float4 _Property_e0ca4e34dd184733915c6122832975e4_Out_0 = _Color;
+            float4 _Property_e0ca4e34dd184733915c6122832975e4_Out_0 = __Filter_Color;
             float4 _Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3;
             Unity_Branch_float4(_Property_7b5fcd77ad264a83a7858d8f8361dbd7_Out_0, _Property_e0ca4e34dd184733915c6122832975e4_Out_0, float4(0.5, 0.5, 0.5, 0), _Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3);
             UnityTexture2D _Property_6c8663f0373d4b058ae8b9af5db9f43e_Out_0 = UnityBuildTexture2DStructNoScale(_Diffuse);
@@ -1054,13 +1054,13 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float4 _Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2;
             Unity_Blend_Overlay_float4(_Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3, _Triplanar_f96cb0998e494774b09fab89ebb65eb5_Out_0, _Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2, 1);
             float _Property_4bd6ac78ba874554b874b76acf5eb180_Out_0 = _Apply_Filters;
-            float _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0 = _Contrast;
+            float _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0 = __Filter_Contrast;
             float _Branch_7646794670b149f6b60b9fe083ccac25_Out_3;
             Unity_Branch_float(_Property_4bd6ac78ba874554b874b76acf5eb180_Out_0, _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0, 1, _Branch_7646794670b149f6b60b9fe083ccac25_Out_3);
             float3 _Contrast_5087ef763a7e408686e5684e2bd7fd3d_Out_2;
             Unity_Contrast_float((_Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2.xyz), _Branch_7646794670b149f6b60b9fe083ccac25_Out_3, _Contrast_5087ef763a7e408686e5684e2bd7fd3d_Out_2);
             float _Property_507c099bfb814af6aeb4eebfbbf3d34a_Out_0 = _Apply_Filters;
-            float _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0 = _Saturation;
+            float _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0 = __Filter_Saturation;
             float _Branch_9912f29c61804626a6ab83b323d383d5_Out_3;
             Unity_Branch_float(_Property_507c099bfb814af6aeb4eebfbbf3d34a_Out_0, _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0, 1, _Branch_9912f29c61804626a6ab83b323d383d5_Out_3);
             float3 _Saturation_07d8daef15d04c6db1e1f18efb74c91f_Out_2;
@@ -1128,6 +1128,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float _Property_b41c1f0171a8491283bb490d369c1633_Out_0 = _Ambient_Occlusion;
             float4 _Multiply_8460e617a2774fc4a9bc1b8ac4b4c498_Out_2;
             Unity_Multiply_float4_float4(_Triplanar_c18df43557c74ecf9550fa6e5f01b85a_Out_0, (_Property_b41c1f0171a8491283bb490d369c1633_Out_0.xxxx), _Multiply_8460e617a2774fc4a9bc1b8ac4b4c498_Out_2);
+            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
             UnityTexture2D _Property_4ffddeb9667041dea5361019922617c3_Out_0 = UnityBuildTexture2DStructNoScale(_Alpha_Map);
             float3 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV = IN.AbsoluteWorldSpacePosition * _Property_0d71a168115a4531a21482c995ff11b8_Out_0;
             float3 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend = SafePositivePow_float(IN.WorldSpaceNormal, min(_Property_a5f4da8e125f4a69b3ef8e0eee9629a9_Out_0, floor(log2(Min_float())/log2(1/sqrt(3)))) );
@@ -1136,16 +1137,15 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xz);
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xy);
             float4 _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0 = Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_X * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.x + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.y + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.z;
-            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
-            float4 _Blend_04e315e7adad422f95d89e384838304a_Out_2;
-            Unity_Blend_Overlay_float4(_Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, (_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Blend_04e315e7adad422f95d89e384838304a_Out_2, 1);
+            float4 _Multiply_969d0f17e76149089b7efa601089c78e_Out_2;
+            Unity_Multiply_float4_float4((_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, _Multiply_969d0f17e76149089b7efa601089c78e_Out_2);
             surface.BaseColor = _Saturation_07d8daef15d04c6db1e1f18efb74c91f_Out_2;
             surface.NormalTS = _NormalStrength_530366de39034d288415f2bd44ee2d24_Out_2;
             surface.Emission = (_Multiply_b2871317a9804ae491f162ac9a41c7ee_Out_2.xyz);
             surface.Metallic = (_Multiply_51419fc37ba3467492dc6057f62e848a_Out_2).x;
             surface.Smoothness = (_Multiply_1190034063a742598e70497b24a917d6_Out_2).x;
             surface.Occlusion = (_Multiply_8460e617a2774fc4a9bc1b8ac4b4c498_Out_2).x;
-            surface.Alpha = (_Blend_04e315e7adad422f95d89e384838304a_Out_2).x;
+            surface.Alpha = (_Multiply_969d0f17e76149089b7efa601089c78e_Out_2).x;
             return surface;
         }
         
@@ -1524,7 +1524,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float _Normal_Strength;
         float _Smoothness;
         float _Metallic;
-        float4 _Color;
+        float4 __Filter_Color;
         float4 _Emission_Color;
         float4 _Alpha_Map_TexelSize;
         float _Opacity;
@@ -1534,9 +1534,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float4 _Metallic_Map_TexelSize;
         float _Ambient_Occlusion;
         float4 _Ambient_Occlusion_Map_TexelSize;
-        float _Contrast;
+        float __Filter_Contrast;
         float _Apply_Filters;
-        float _Saturation;
+        float __Filter_Saturation;
         CBUFFER_END
         
         // Object and Global properties
@@ -1658,7 +1658,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         {
             SurfaceDescription surface = (SurfaceDescription)0;
             float _Property_7b5fcd77ad264a83a7858d8f8361dbd7_Out_0 = _Apply_Filters;
-            float4 _Property_e0ca4e34dd184733915c6122832975e4_Out_0 = _Color;
+            float4 _Property_e0ca4e34dd184733915c6122832975e4_Out_0 = __Filter_Color;
             float4 _Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3;
             Unity_Branch_float4(_Property_7b5fcd77ad264a83a7858d8f8361dbd7_Out_0, _Property_e0ca4e34dd184733915c6122832975e4_Out_0, float4(0.5, 0.5, 0.5, 0), _Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3);
             UnityTexture2D _Property_6c8663f0373d4b058ae8b9af5db9f43e_Out_0 = UnityBuildTexture2DStructNoScale(_Diffuse);
@@ -1674,13 +1674,13 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float4 _Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2;
             Unity_Blend_Overlay_float4(_Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3, _Triplanar_f96cb0998e494774b09fab89ebb65eb5_Out_0, _Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2, 1);
             float _Property_4bd6ac78ba874554b874b76acf5eb180_Out_0 = _Apply_Filters;
-            float _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0 = _Contrast;
+            float _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0 = __Filter_Contrast;
             float _Branch_7646794670b149f6b60b9fe083ccac25_Out_3;
             Unity_Branch_float(_Property_4bd6ac78ba874554b874b76acf5eb180_Out_0, _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0, 1, _Branch_7646794670b149f6b60b9fe083ccac25_Out_3);
             float3 _Contrast_5087ef763a7e408686e5684e2bd7fd3d_Out_2;
             Unity_Contrast_float((_Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2.xyz), _Branch_7646794670b149f6b60b9fe083ccac25_Out_3, _Contrast_5087ef763a7e408686e5684e2bd7fd3d_Out_2);
             float _Property_507c099bfb814af6aeb4eebfbbf3d34a_Out_0 = _Apply_Filters;
-            float _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0 = _Saturation;
+            float _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0 = __Filter_Saturation;
             float _Branch_9912f29c61804626a6ab83b323d383d5_Out_3;
             Unity_Branch_float(_Property_507c099bfb814af6aeb4eebfbbf3d34a_Out_0, _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0, 1, _Branch_9912f29c61804626a6ab83b323d383d5_Out_3);
             float3 _Saturation_07d8daef15d04c6db1e1f18efb74c91f_Out_2;
@@ -1748,6 +1748,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float _Property_b41c1f0171a8491283bb490d369c1633_Out_0 = _Ambient_Occlusion;
             float4 _Multiply_8460e617a2774fc4a9bc1b8ac4b4c498_Out_2;
             Unity_Multiply_float4_float4(_Triplanar_c18df43557c74ecf9550fa6e5f01b85a_Out_0, (_Property_b41c1f0171a8491283bb490d369c1633_Out_0.xxxx), _Multiply_8460e617a2774fc4a9bc1b8ac4b4c498_Out_2);
+            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
             UnityTexture2D _Property_4ffddeb9667041dea5361019922617c3_Out_0 = UnityBuildTexture2DStructNoScale(_Alpha_Map);
             float3 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV = IN.AbsoluteWorldSpacePosition * _Property_0d71a168115a4531a21482c995ff11b8_Out_0;
             float3 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend = SafePositivePow_float(IN.WorldSpaceNormal, min(_Property_a5f4da8e125f4a69b3ef8e0eee9629a9_Out_0, floor(log2(Min_float())/log2(1/sqrt(3)))) );
@@ -1756,16 +1757,15 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xz);
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xy);
             float4 _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0 = Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_X * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.x + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.y + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.z;
-            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
-            float4 _Blend_04e315e7adad422f95d89e384838304a_Out_2;
-            Unity_Blend_Overlay_float4(_Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, (_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Blend_04e315e7adad422f95d89e384838304a_Out_2, 1);
+            float4 _Multiply_969d0f17e76149089b7efa601089c78e_Out_2;
+            Unity_Multiply_float4_float4((_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, _Multiply_969d0f17e76149089b7efa601089c78e_Out_2);
             surface.BaseColor = _Saturation_07d8daef15d04c6db1e1f18efb74c91f_Out_2;
             surface.NormalTS = _NormalStrength_530366de39034d288415f2bd44ee2d24_Out_2;
             surface.Emission = (_Multiply_b2871317a9804ae491f162ac9a41c7ee_Out_2.xyz);
             surface.Metallic = (_Multiply_51419fc37ba3467492dc6057f62e848a_Out_2).x;
             surface.Smoothness = (_Multiply_1190034063a742598e70497b24a917d6_Out_2).x;
             surface.Occlusion = (_Multiply_8460e617a2774fc4a9bc1b8ac4b4c498_Out_2).x;
-            surface.Alpha = (_Blend_04e315e7adad422f95d89e384838304a_Out_2).x;
+            surface.Alpha = (_Multiply_969d0f17e76149089b7efa601089c78e_Out_2).x;
             return surface;
         }
         
@@ -2091,7 +2091,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float _Normal_Strength;
         float _Smoothness;
         float _Metallic;
-        float4 _Color;
+        float4 __Filter_Color;
         float4 _Emission_Color;
         float4 _Alpha_Map_TexelSize;
         float _Opacity;
@@ -2101,9 +2101,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float4 _Metallic_Map_TexelSize;
         float _Ambient_Occlusion;
         float4 _Ambient_Occlusion_Map_TexelSize;
-        float _Contrast;
+        float __Filter_Contrast;
         float _Apply_Filters;
-        float _Saturation;
+        float __Filter_Saturation;
         CBUFFER_END
         
         // Object and Global properties
@@ -2139,13 +2139,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         
         // Graph Functions
         
-        void Unity_Blend_Overlay_float4(float4 Base, float4 Blend, out float4 Out, float Opacity)
+        void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
         {
-            float4 result1 = 1.0 - 2.0 * (1.0 - Base) * (1.0 - Blend);
-            float4 result2 = 2.0 * Base * Blend;
-            float4 zeroOrOne = step(Base, 0.5);
-            Out = result2 * zeroOrOne + (1 - zeroOrOne) * result1;
-            Out = lerp(Base, Out, Opacity);
+            Out = A * B;
         }
         
         // Custom interpolators pre vertex
@@ -2186,6 +2182,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
+            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
             UnityTexture2D _Property_4ffddeb9667041dea5361019922617c3_Out_0 = UnityBuildTexture2DStructNoScale(_Alpha_Map);
             float _Property_0d71a168115a4531a21482c995ff11b8_Out_0 = _Tiling;
             float _Property_a5f4da8e125f4a69b3ef8e0eee9629a9_Out_0 = _Blend;
@@ -2196,10 +2193,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xz);
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xy);
             float4 _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0 = Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_X * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.x + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.y + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.z;
-            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
-            float4 _Blend_04e315e7adad422f95d89e384838304a_Out_2;
-            Unity_Blend_Overlay_float4(_Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, (_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Blend_04e315e7adad422f95d89e384838304a_Out_2, 1);
-            surface.Alpha = (_Blend_04e315e7adad422f95d89e384838304a_Out_2).x;
+            float4 _Multiply_969d0f17e76149089b7efa601089c78e_Out_2;
+            Unity_Multiply_float4_float4((_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, _Multiply_969d0f17e76149089b7efa601089c78e_Out_2);
+            surface.Alpha = (_Multiply_969d0f17e76149089b7efa601089c78e_Out_2).x;
             return surface;
         }
         
@@ -2507,7 +2503,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float _Normal_Strength;
         float _Smoothness;
         float _Metallic;
-        float4 _Color;
+        float4 __Filter_Color;
         float4 _Emission_Color;
         float4 _Alpha_Map_TexelSize;
         float _Opacity;
@@ -2517,9 +2513,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float4 _Metallic_Map_TexelSize;
         float _Ambient_Occlusion;
         float4 _Ambient_Occlusion_Map_TexelSize;
-        float _Contrast;
+        float __Filter_Contrast;
         float _Apply_Filters;
-        float _Saturation;
+        float __Filter_Saturation;
         CBUFFER_END
         
         // Object and Global properties
@@ -2632,7 +2628,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         {
             SurfaceDescription surface = (SurfaceDescription)0;
             float _Property_7b5fcd77ad264a83a7858d8f8361dbd7_Out_0 = _Apply_Filters;
-            float4 _Property_e0ca4e34dd184733915c6122832975e4_Out_0 = _Color;
+            float4 _Property_e0ca4e34dd184733915c6122832975e4_Out_0 = __Filter_Color;
             float4 _Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3;
             Unity_Branch_float4(_Property_7b5fcd77ad264a83a7858d8f8361dbd7_Out_0, _Property_e0ca4e34dd184733915c6122832975e4_Out_0, float4(0.5, 0.5, 0.5, 0), _Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3);
             UnityTexture2D _Property_6c8663f0373d4b058ae8b9af5db9f43e_Out_0 = UnityBuildTexture2DStructNoScale(_Diffuse);
@@ -2648,13 +2644,13 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float4 _Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2;
             Unity_Blend_Overlay_float4(_Branch_ef11623f9e8b4e6191fcc3ea8bc1312a_Out_3, _Triplanar_f96cb0998e494774b09fab89ebb65eb5_Out_0, _Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2, 1);
             float _Property_4bd6ac78ba874554b874b76acf5eb180_Out_0 = _Apply_Filters;
-            float _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0 = _Contrast;
+            float _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0 = __Filter_Contrast;
             float _Branch_7646794670b149f6b60b9fe083ccac25_Out_3;
             Unity_Branch_float(_Property_4bd6ac78ba874554b874b76acf5eb180_Out_0, _Property_8294ca47c1a14914a77bfa2e11e7db60_Out_0, 1, _Branch_7646794670b149f6b60b9fe083ccac25_Out_3);
             float3 _Contrast_5087ef763a7e408686e5684e2bd7fd3d_Out_2;
             Unity_Contrast_float((_Blend_24c4787dcd7349eaae00fa6c3d9ca4ee_Out_2.xyz), _Branch_7646794670b149f6b60b9fe083ccac25_Out_3, _Contrast_5087ef763a7e408686e5684e2bd7fd3d_Out_2);
             float _Property_507c099bfb814af6aeb4eebfbbf3d34a_Out_0 = _Apply_Filters;
-            float _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0 = _Saturation;
+            float _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0 = __Filter_Saturation;
             float _Branch_9912f29c61804626a6ab83b323d383d5_Out_3;
             Unity_Branch_float(_Property_507c099bfb814af6aeb4eebfbbf3d34a_Out_0, _Property_5d9b092d0e4645c594f92d6e73dc7c4c_Out_0, 1, _Branch_9912f29c61804626a6ab83b323d383d5_Out_3);
             float3 _Saturation_07d8daef15d04c6db1e1f18efb74c91f_Out_2;
@@ -2673,6 +2669,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             Unity_Multiply_float4_float4(_Property_d19f06a576904574bc1ce7a4bc0705de_Out_0, (_Property_8538694bbc6046818d0fe00a0884c6e1_Out_0.xxxx), _Multiply_a9f07d97808a4c1a81856fe1fc446ee1_Out_2);
             float4 _Multiply_b2871317a9804ae491f162ac9a41c7ee_Out_2;
             Unity_Multiply_float4_float4(_Triplanar_d184924eec244d279d611947e624fc09_Out_0, _Multiply_a9f07d97808a4c1a81856fe1fc446ee1_Out_2, _Multiply_b2871317a9804ae491f162ac9a41c7ee_Out_2);
+            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
             UnityTexture2D _Property_4ffddeb9667041dea5361019922617c3_Out_0 = UnityBuildTexture2DStructNoScale(_Alpha_Map);
             float3 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV = IN.AbsoluteWorldSpacePosition * _Property_0d71a168115a4531a21482c995ff11b8_Out_0;
             float3 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend = SafePositivePow_float(IN.WorldSpaceNormal, min(_Property_a5f4da8e125f4a69b3ef8e0eee9629a9_Out_0, floor(log2(Min_float())/log2(1/sqrt(3)))) );
@@ -2681,12 +2678,11 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xz);
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xy);
             float4 _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0 = Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_X * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.x + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.y + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.z;
-            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
-            float4 _Blend_04e315e7adad422f95d89e384838304a_Out_2;
-            Unity_Blend_Overlay_float4(_Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, (_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Blend_04e315e7adad422f95d89e384838304a_Out_2, 1);
+            float4 _Multiply_969d0f17e76149089b7efa601089c78e_Out_2;
+            Unity_Multiply_float4_float4((_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, _Multiply_969d0f17e76149089b7efa601089c78e_Out_2);
             surface.BaseColor = _Saturation_07d8daef15d04c6db1e1f18efb74c91f_Out_2;
             surface.Emission = (_Multiply_b2871317a9804ae491f162ac9a41c7ee_Out_2.xyz);
-            surface.Alpha = (_Blend_04e315e7adad422f95d89e384838304a_Out_2).x;
+            surface.Alpha = (_Multiply_969d0f17e76149089b7efa601089c78e_Out_2).x;
             return surface;
         }
         
@@ -2994,7 +2990,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float _Normal_Strength;
         float _Smoothness;
         float _Metallic;
-        float4 _Color;
+        float4 __Filter_Color;
         float4 _Emission_Color;
         float4 _Alpha_Map_TexelSize;
         float _Opacity;
@@ -3004,9 +3000,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float4 _Metallic_Map_TexelSize;
         float _Ambient_Occlusion;
         float4 _Ambient_Occlusion_Map_TexelSize;
-        float _Contrast;
+        float __Filter_Contrast;
         float _Apply_Filters;
-        float _Saturation;
+        float __Filter_Saturation;
         CBUFFER_END
         
         // Object and Global properties
@@ -3042,13 +3038,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         
         // Graph Functions
         
-        void Unity_Blend_Overlay_float4(float4 Base, float4 Blend, out float4 Out, float Opacity)
+        void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
         {
-            float4 result1 = 1.0 - 2.0 * (1.0 - Base) * (1.0 - Blend);
-            float4 result2 = 2.0 * Base * Blend;
-            float4 zeroOrOne = step(Base, 0.5);
-            Out = result2 * zeroOrOne + (1 - zeroOrOne) * result1;
-            Out = lerp(Base, Out, Opacity);
+            Out = A * B;
         }
         
         // Custom interpolators pre vertex
@@ -3089,6 +3081,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
+            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
             UnityTexture2D _Property_4ffddeb9667041dea5361019922617c3_Out_0 = UnityBuildTexture2DStructNoScale(_Alpha_Map);
             float _Property_0d71a168115a4531a21482c995ff11b8_Out_0 = _Tiling;
             float _Property_a5f4da8e125f4a69b3ef8e0eee9629a9_Out_0 = _Blend;
@@ -3099,10 +3092,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xz);
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xy);
             float4 _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0 = Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_X * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.x + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.y + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.z;
-            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
-            float4 _Blend_04e315e7adad422f95d89e384838304a_Out_2;
-            Unity_Blend_Overlay_float4(_Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, (_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Blend_04e315e7adad422f95d89e384838304a_Out_2, 1);
-            surface.Alpha = (_Blend_04e315e7adad422f95d89e384838304a_Out_2).x;
+            float4 _Multiply_969d0f17e76149089b7efa601089c78e_Out_2;
+            Unity_Multiply_float4_float4((_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, _Multiply_969d0f17e76149089b7efa601089c78e_Out_2);
+            surface.Alpha = (_Multiply_969d0f17e76149089b7efa601089c78e_Out_2).x;
             return surface;
         }
         
@@ -3408,7 +3400,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float _Normal_Strength;
         float _Smoothness;
         float _Metallic;
-        float4 _Color;
+        float4 __Filter_Color;
         float4 _Emission_Color;
         float4 _Alpha_Map_TexelSize;
         float _Opacity;
@@ -3418,9 +3410,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         float4 _Metallic_Map_TexelSize;
         float _Ambient_Occlusion;
         float4 _Ambient_Occlusion_Map_TexelSize;
-        float _Contrast;
+        float __Filter_Contrast;
         float _Apply_Filters;
-        float _Saturation;
+        float __Filter_Saturation;
         CBUFFER_END
         
         // Object and Global properties
@@ -3456,13 +3448,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         
         // Graph Functions
         
-        void Unity_Blend_Overlay_float4(float4 Base, float4 Blend, out float4 Out, float Opacity)
+        void Unity_Multiply_float4_float4(float4 A, float4 B, out float4 Out)
         {
-            float4 result1 = 1.0 - 2.0 * (1.0 - Base) * (1.0 - Blend);
-            float4 result2 = 2.0 * Base * Blend;
-            float4 zeroOrOne = step(Base, 0.5);
-            Out = result2 * zeroOrOne + (1 - zeroOrOne) * result1;
-            Out = lerp(Base, Out, Opacity);
+            Out = A * B;
         }
         
         // Custom interpolators pre vertex
@@ -3503,6 +3491,7 @@ Shader "Triplanar/TriplanarLit (Advanced)"
         SurfaceDescription SurfaceDescriptionFunction(SurfaceDescriptionInputs IN)
         {
             SurfaceDescription surface = (SurfaceDescription)0;
+            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
             UnityTexture2D _Property_4ffddeb9667041dea5361019922617c3_Out_0 = UnityBuildTexture2DStructNoScale(_Alpha_Map);
             float _Property_0d71a168115a4531a21482c995ff11b8_Out_0 = _Tiling;
             float _Property_a5f4da8e125f4a69b3ef8e0eee9629a9_Out_0 = _Blend;
@@ -3513,10 +3502,9 @@ Shader "Triplanar/TriplanarLit (Advanced)"
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xz);
             float4 Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z = SAMPLE_TEXTURE2D(_Property_4ffddeb9667041dea5361019922617c3_Out_0.tex, _Property_4ffddeb9667041dea5361019922617c3_Out_0.samplerstate, Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_UV.xy);
             float4 _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0 = Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_X * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.x + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Y * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.y + Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Z * Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Blend.z;
-            float _Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0 = _Opacity;
-            float4 _Blend_04e315e7adad422f95d89e384838304a_Out_2;
-            Unity_Blend_Overlay_float4(_Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, (_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Blend_04e315e7adad422f95d89e384838304a_Out_2, 1);
-            surface.Alpha = (_Blend_04e315e7adad422f95d89e384838304a_Out_2).x;
+            float4 _Multiply_969d0f17e76149089b7efa601089c78e_Out_2;
+            Unity_Multiply_float4_float4((_Property_85bb0cea7a3e455b96bc35eef9b04b52_Out_0.xxxx), _Triplanar_6f2fd2dbd39f45f1b46f5b62d6f1ccb8_Out_0, _Multiply_969d0f17e76149089b7efa601089c78e_Out_2);
+            surface.Alpha = (_Multiply_969d0f17e76149089b7efa601089c78e_Out_2).x;
             return surface;
         }
         
