@@ -1,4 +1,5 @@
 # Ultimate-Triplanar-Shaders for Unity
+Built for BIRP, but made with Shader Graph, so easy to convert to different pipelines.
 
 **Triplanar Shaders for Unity.**
 
